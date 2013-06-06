@@ -120,5 +120,9 @@ public  class LSystemDrawer implements Steppable
         // end while
         }
     // end step
+    
+    public double getSegSize(){
+    	return segsize;
+    }
     }
 // end class

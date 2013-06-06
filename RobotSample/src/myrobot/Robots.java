@@ -15,7 +15,7 @@ import sim.util.Int2D;
 
 public class Robots extends SimState{
 
-	public int numRobots = 5;
+	public int numRobots = 1;
 	public int numStreets =5;
 	public int numObstacles =10;
 	
@@ -27,6 +27,7 @@ public class Robots extends SimState{
 	
 	public LSystemData l = new LSystemData();
 	LSystemDrawer ld;
+	double segsize;
 	
     public Continuous2D drawEnvironment;
 	
@@ -89,6 +90,7 @@ public class Robots extends SimState{
 	 */
 	public void addRobot(){
 		intersection = ld.intersection;
+		segsize = ld.getSegSize();
 		int numIntersection = ld.intersection.numObjs;
 		System.out.println("Adding robot... Intersection num: "+ld.intersection.numObjs);
 		
