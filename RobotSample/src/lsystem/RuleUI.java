@@ -533,7 +533,7 @@ public class RuleUI extends JPanel
         
         // rules table setup
         // same defaults as in LSystemWithUI.java
-        seedField.setText("F+F+F+F");
+        seedField.setText("F");
         
         ruleTable.setValueAt("F", 0, 0);
         ruleTable.setValueAt("F[+F]F[-F]F", 0, 1);

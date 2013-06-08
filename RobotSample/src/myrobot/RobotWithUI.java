@@ -11,7 +11,6 @@ import lsystem.LSystemData;
 import lsystem.Rule;
 import lsystem.RuleUI;
 
-import sim.app.tutorial3.Tutorial3;
 import sim.display.Console;
 import sim.display.Controller;
 import sim.display.Display2D;
@@ -134,7 +133,6 @@ public class RobotWithUI extends GUIState{
      displayFrame.setVisible(true);
 
      display.setClipping(false);
-     // specify the backdrop color  -- what gets painted behind the displays
      display.setBackdrop(Color.white);
 
      // attach the portrayals
@@ -146,8 +144,8 @@ public class RobotWithUI extends GUIState{
      display.attach(systemPortrayal,"LSystem-street");
      
      Robots ls = (Robots)state;
-     LSystemData.setVector(ls.l.code, "F+F+F+F");
-     ls.l.seed = "F+F+F+F";
+     LSystemData.setVector(ls.l.code, "F");
+     ls.l.seed = "F";
      
      ls.l.rules.add(new Rule((byte)'F', "F[+F]F[-F]F"));
      ((Console)c).getTabPane().removeTabAt(3);

@@ -32,8 +32,8 @@ public  class Segment extends SimplePortrayal2D
         w = info.draw.width;
         h = info.draw.height;
         
-        x3 = (int)(info.draw.x) + (int)(info.draw.width*x2);
-        y3 = (int)(info.draw.y) + (int)(info.draw.height*y2);  //not accurate
+        x3 = (int)(info.draw.width*x) + (int)(info.draw.width*x2);
+        y3 = (int)(info.draw.height*y) + (int)(info.draw.height*y2);  //not accurate
         x1 = (int)(info.draw.width*x);
         y1 = (int)(info.draw.height*y);
         
@@ -41,6 +41,10 @@ public  class Segment extends SimplePortrayal2D
             (int)(info.draw.y),
             (int)(info.draw.x) + (int)(info.draw.width*x2),
             (int)(info.draw.y) + (int)(info.draw.height*y2));
+//        g.drawLine((int)(x*w),(int)(y*h) ,(int)((x+x2)*w),(int)((y+y2)*h));
+        
+//        System.out.println("drawline --------------"+x1+y1+x3+y3);
+//        System.out.println("line2-----------"+(int)(info.draw.width*x2)+(int)(info.draw.height*y2));
         }
 
     public void hitObjects(DrawInfo2D range, Bag putInHere)

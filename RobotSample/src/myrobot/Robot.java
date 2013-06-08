@@ -33,8 +33,6 @@ public class Robot implements Steppable{
 		Continuous2D environment = sim.robots;
 		Double2D me = environment.getObjectLocation(this); //current location
 		
-		
-		
 		double newx = me.x;
 		double newy = me.y;
 		if(isAtIntersection(me)){ //robot at the intersection
@@ -52,7 +50,7 @@ public class Robot implements Steppable{
 		}
 		
 		if(reverseDrive==false){
-			if(isAtRoadEnd(me)){ //robot at the end
+			if(isAtRoadEnd(me)){ //robot at the road end
 				int direc = this.getCurrentDirection();
 				direction = -direc; //change to opposite direction
 				System.out.println("at the end"+this.getCurrentIntersection()+", "+direc);
@@ -95,7 +93,7 @@ public class Robot implements Steppable{
 		double w = this.getCurrentIntersection().w;
 		double h = this.getCurrentIntersection().h;
 		Double2D currentloc = new Double2D(loc.x*w,loc.y*h);
-		
+		Double2D startPoint = new Double2D(((Segment)intersection.get(0)).x1,((Segment)intersection.get(0)).y1); //coordinate of start point
 		
 		if(rand<numobj){
 			reverseDrive = false;
@@ -106,6 +104,8 @@ public class Robot implements Steppable{
 			x1=((Segment)inter.get(rand)).x3;
 			y1=((Segment)inter.get(rand)).y3;
 			
+			System.out.println("normal mode: "+x+y+x1+y1);
+			
 			if(y1<y){ return 1;} //up
 			else if(y1>y){ return -1;} //down 
 			else if(x1<x){ return 2;} //left
@@ -115,18 +115,36 @@ public class Robot implements Steppable{
 		else{
 			reverseDrive = true ;
 			Segment s = findSegment(currentloc);
-			System.out.println("reverse"+s);
-			if(s!=null)
+			System.out.println("reverse:"+s);
+			if(s!=null){
 				this.setCurrentIntersection(s);
+				x = s.x1;
+				y = s.y1;
+				x1 = s.x3;
+				y1 = s.y3;
+				if(y1<y){ return -1; }
+				else if(y1>y){ return 1;}
+				else if(x1<x){ return -2;}
+				else if(x1>x){ return 2;}
+			}
+				
 			
-			x = s.x1;
-			y = s.y1;
-			x1 = s.x3;
-			y1 = s.y3;
-			if(y1<y){ return -1; }
-			else if(y1>y){ return 1;}
-			else if(x1<x){ return -2;}
-			else if(x1>x){ return 2;}
+//			else{  //robot at the start point  and  will turn around
+//				reverseDrive = false;
+//				Segment start = (Segment) intersection.get(0);
+//				this.setCurrentIntersection(start);
+//				x = start.x1;
+//				y = start.y1;
+//				x1 = start.x3;
+//				y1 = start.y3;
+//				if(y1<y){ return 1;} //up
+//				else if(y1>y){ return -1;} //down 
+//				else if(x1<x){ return 2;} //left
+//				else if(x1>x){ return -2;}//right
+//			}
+			
+			
+			
 			
 		}
 		
@@ -141,7 +159,10 @@ public class Robot implements Steppable{
 	 */
 	public Segment findSegment(Double2D loc){
 		Segment s;
+//		System.out.println("findSegment:"+loc.x+loc.y);
+		
 		for(int i=0;i<intersection.size();i++){
+			
 			Double2D end = new Double2D( ((Segment)intersection.get(i)).x3,((Segment)intersection.get(i)).y3);
 			if(loc.equals(end)){
 				return (Segment) intersection.get(i);
@@ -171,6 +192,7 @@ public class Robot implements Steppable{
 	 */
 	public boolean isAtRoadEnd(Double2D loc) {
 		Segment current = this.getCurrentIntersection();
+		
 		double w = this.getCurrentIntersection().w;
 		double h = this.getCurrentIntersection().h;
 		
