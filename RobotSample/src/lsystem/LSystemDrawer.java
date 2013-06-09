@@ -52,6 +52,7 @@ public  class LSystemDrawer implements Steppable
         stack = new Bag();
         
         intersection = new Bag();
+        
         }
 
     public void step( final SimState state )

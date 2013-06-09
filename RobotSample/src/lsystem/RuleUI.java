@@ -91,6 +91,7 @@ public class RuleUI extends JPanel
                     ls.l.rules.add( new Rule( (byte)(((String)(ruleTable.getValueAt(r,0))).
                                 substring(0,1).charAt(0)), (String)ruleTable.
                             getValueAt(r,1)) );
+            
             }
         
         // set # of expansions
@@ -155,17 +156,48 @@ public class RuleUI extends JPanel
                     // else keep expanding
                     ruleApplied = false;        // reset this
                     
-                    for(r=0; r<ls.l.rules.size(); r++)
-                        {
-                        if(ls.l.code.b[p] == (((Rule)ls.l.rules.get(r)).pattern))               // replace!
-                            {
-                            newCode.addAll(((Rule)ls.l.rules.get(r)).replace);
-                            ruleApplied = true;
-                            
-                            // dont try to expand extra rules, that would be trouble
-                            break;
-                            }
-                        }
+//                    for(r=0; r<ls.l.rules.size(); r++)
+//                        {
+//                        if(ls.l.code.b[p] == (((Rule)ls.l.rules.get(r)).pattern))               // replace!
+//                            {
+//                            newCode.addAll(((Rule)ls.l.rules.get(r)).replace);
+//                            ruleApplied = true;
+//                            
+//                            // dont try to expand extra rules, that would be trouble
+//                            break;
+//                            }
+//                        }
+                    
+    //############# my extension here. make l system random using Stochastic grammars##############
+                    int ruleSize = ls.l.rules.size();
+                    System.out.println("rule size..in RuleUI.."+ruleSize);
+                    if(ls.l.code.b[p] == (((Rule)ls.l.rules.get(0)).pattern)) {
+		                    if(ruleSize==1){
+		                    	newCode.addAll(((Rule)ls.l.rules.get(0)).replace);
+		                    	ruleApplied = true;
+		                    }
+		                    else{
+		                    	int random = ls.random.nextInt(ruleSize);
+		                    	
+		            			newCode.addAll(((Rule)ls.l.rules.get(random)).replace);
+		            			ruleApplied = true;
+		                    	
+		                    }
+                    }
+//                    int random = ls.random.nextInt(100);
+//                    if(ls.l.code.b[p] == (((Rule)ls.l.rules.get(0)).pattern))               // replace!
+//                    {
+//                    	if(random<50)
+//                    		newCode.addAll(((Rule)ls.l.rules.get(0)).replace);
+//                    	else
+//                    		newCode.addAll(((Rule)ls.l.rules.get(1)).replace);
+//                    	
+//                    	ruleApplied = true;
+//                    
+//                    }
+                    
+                    
+                    
                     
                     if(!ruleApplied)            // if no rule was found for this item
                         {
@@ -211,6 +243,9 @@ public class RuleUI extends JPanel
                     }
                 // end main expansion loop
 
+                
+                System.out.println("after calculating.."+ls.l.code.length);
+                
                 // on successful end, enable calculate and disable cancel buttons
                 SwingUtilities.invokeLater(
                     new Runnable()
@@ -387,6 +422,9 @@ public class RuleUI extends JPanel
                         ruleTable.setValueAt(String.valueOf((char)((Rule)(ls.l.rules.get(t))).pattern), t, 0);
                         ruleTable.setValueAt(LSystemData.fromVector(((Rule)(ls.l.rules.get(t))).replace), t, 1);
                         }
+                    
+                    System.out.println("RuleUI---"+ls.l.code.length);
+                    
                     }
                 catch (Exception ex)
                     {

@@ -6,7 +6,6 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
 import lsystem.DrawUI;
-import lsystem.LSystem;
 import lsystem.LSystemData;
 import lsystem.Rule;
 import lsystem.RuleUI;
