@@ -1,6 +1,7 @@
 package myrobot;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -15,10 +16,12 @@ import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;
 import sim.engine.SimState;
+import sim.portrayal.DrawInfo2D;
 import sim.portrayal.Inspector;
 import sim.portrayal.continuous.ContinuousPortrayal2D;
 import sim.portrayal.grid.FastValueGridPortrayal2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
+import sim.portrayal.simple.RectanglePortrayal2D;
 
 public class RobotWithUI extends GUIState{
 	
@@ -83,7 +86,17 @@ public class RobotWithUI extends GUIState{
 	 systemPortrayal.setField(((Robots)state).drawEnvironment);	 
 		 
      robotsPortrayal.setField(((Robots)state).robots);
-     robotsPortrayal.setPortrayalForAll( new sim.portrayal.simple.OvalPortrayal2D(Color.black) );
+//     robotsPortrayal.setPortrayalForAll( new sim.portrayal.simple.OvalPortrayal2D(Color.black) );
+     robotsPortrayal.setPortrayalForClass(Target.class, new sim.portrayal.simple.OvalPortrayal2D(Color.black));
+     robotsPortrayal.setPortrayalForClass(Robot.class, new RectanglePortrayal2D(1)
+		{
+			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
+			{
+					paint = new Color(255, 0, 0x00);
+								
+			    super.draw(object, graphics, info);
+			}
+		});
      
      wallPortrayal.setField(((Robots)state).walls);
 	 wallPortrayal.setMap(new sim.util.gui.SimpleColorMap(

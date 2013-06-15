@@ -170,7 +170,6 @@ public class RuleUI extends JPanel
                     
     //############# my extension here. make l system random using Stochastic grammars##############
                     int ruleSize = ls.l.rules.size();
-                    System.out.println("rule size..in RuleUI.."+ruleSize);
                     if(ls.l.code.b[p] == (((Rule)ls.l.rules.get(0)).pattern)) {
 		                    if(ruleSize==1){
 		                    	newCode.addAll(((Rule)ls.l.rules.get(0)).replace);

@@ -25,6 +25,7 @@ public class Robots extends SimState{
 	public IntGrid2D lstreets; //L system street
 	public IntGrid2D obstacles;
 	
+	public Target t;
 	public LSystemData l = new LSystemData();
 	LSystemDrawer ld;
 	double segsize;
@@ -108,6 +109,10 @@ public class Robots extends SimState{
 			robots.setObjectLocation(r,
 	                new Double2D( ((Segment)intersection.get(index)).x ,((Segment)intersection.get(index)).y )); // random location
 		}
+		
+		t = new Target();
+		int index = random.nextInt(numIntersection);
+		robots.setObjectLocation(t, new Double2D( ((Segment)intersection.get(index)).x ,((Segment)intersection.get(index)).y ));
 		
 	}
 	

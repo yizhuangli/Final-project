@@ -1,1 +1,0 @@
-CLASHWITHOBSTACLE:car20; time:3steps; location: (24.412247941412147 , 92.80331417366871)with octacle id = 15
