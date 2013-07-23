@@ -21,6 +21,7 @@ import sim.portrayal.Inspector;
 import sim.portrayal.continuous.ContinuousPortrayal2D;
 import sim.portrayal.grid.FastValueGridPortrayal2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
+import sim.portrayal.simple.OvalPortrayal2D;
 import sim.portrayal.simple.RectanglePortrayal2D;
 
 public class RobotWithUI extends GUIState{
@@ -85,18 +86,30 @@ public class RobotWithUI extends GUIState{
      // portray and how to portray them
 	 systemPortrayal.setField(((Robots)state).drawEnvironment);	 
 		 
-     robotsPortrayal.setField(((Robots)state).robots);
+     robotsPortrayal.setField(((Robots)state).robotEnvironment);
 //     robotsPortrayal.setPortrayalForAll( new sim.portrayal.simple.OvalPortrayal2D(Color.black) );
      robotsPortrayal.setPortrayalForClass(Target.class, new sim.portrayal.simple.OvalPortrayal2D(Color.black));
      robotsPortrayal.setPortrayalForClass(Robot.class, new RectanglePortrayal2D(1)
 		{
 			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
 			{
-					paint = new Color(255, 0, 0x00);
+					paint = new Color(0, 0, 255);  //blue
 								
 			    super.draw(object, graphics, info);
 			}
 		});
+     
+     robotsPortrayal.setPortrayalForClass(Light.class, new OvalPortrayal2D(1){
+    	 public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
+    	 {
+    		 if(((Light)object).getSignal()==1)//green light
+    			 paint = new Color(0,204,0);
+    		 else
+    			 paint = new Color(255,0,0);
+    		
+    		 super.draw(object, graphics, info);
+    	 }
+     });
      
      wallPortrayal.setField(((Robots)state).walls);
 	 wallPortrayal.setMap(new sim.util.gui.SimpleColorMap(

@@ -18,8 +18,9 @@ public class Robots extends SimState{
 	public int numRobots = 1;
 	public int numStreets =5;
 	public int numObstacles =10;
+	public int numLights = 1;
 	
-	public Continuous2D robots;
+	public Continuous2D robotEnvironment;
 	public IntGrid2D walls;
 	public IntGrid2D streets;
 	public IntGrid2D lstreets; //L system street
@@ -35,6 +36,8 @@ public class Robots extends SimState{
 	
 	Bag bagObstacle = new Bag();
 	Bag intersection; //store the segment of  roads
+	Bag robotBag = new Bag(); //store all robots here
+	Bag lightBag = new Bag(); //store all lights here
 	
 	public int gridWidth = 100;
     public int gridHeight = 100;
@@ -48,6 +51,8 @@ public class Robots extends SimState{
     public void setNumOfRobots(int val){ if(val>0) numRobots = val;}
     public int getNumOfStreets(){return numStreets;}
     public void setNumOfStreets(int val){ if(val>0) numStreets = val;}
+    public int getNumOfLights(){ return numLights;}
+    public void setNumOfLights(int val){ if(val>0) numLights = val;}
     
 	public Robots(long seed) {
 		super(seed);
@@ -55,7 +60,7 @@ public class Robots extends SimState{
 	
 	public void start(){
 		super.start();
-		robots = new Continuous2D(1.0,gridWidth,gridHeight);
+		robotEnvironment = new Continuous2D(1.0,gridWidth,gridHeight);
 		walls = new IntGrid2D(gridWidth,gridHeight);
 		streets = new IntGrid2D(gridWidth,gridHeight);
 		lstreets = new IntGrid2D(gridWidth,gridHeight);
@@ -84,18 +89,39 @@ public class Robots extends SimState{
 	 */
 	private void reset() {
 		bagObstacle.clear();
+		robotBag.clear();
+		lightBag.clear();
 	}
+	
+	
 	
 	/**
 	 * add robots on the road after drawing the road
 	 */
-	public void addRobot(){
+	public void addLightAndRobot(){
 		intersection = ld.intersection;
 		segsize = ld.getSegSize();
 		int numIntersection = ld.intersection.numObjs;
-		System.out.println("Adding robot... Intersection num: "+ld.intersection.numObjs);
+		System.out.println("Adding light and robot... Intersection num: "+ld.intersection.numObjs);
+		
+		
+		//add traffic lights on the map
+		Light l;
+		if(numLights>0){
+			for(int i=0;i<numLights;i++){
+				l = new Light(this);
+				int index = random.nextInt(numIntersection);
+				
+				lightBag.add(l);
+				schedule.scheduleRepeating(l);
+				robotEnvironment.setObjectLocation(l, new Double2D( ((Segment)intersection.get(index)).x ,((Segment)intersection.get(index)).y ));
+			
+				l.setLightLocation(new Double2D( ((Segment)intersection.get(index)).x ,((Segment)intersection.get(index)).y ));
+			}
+		}
 		
 
+		//add robots on the map
 		Robot r;
 		for(int i=0; i< numRobots; i++){
 			r = new Robot(this);
@@ -105,17 +131,40 @@ public class Robots extends SimState{
 //			Bag test = drawEnvironment.getObjectsAtLocation(new Double2D(r.getCurrentIntersection().x,r.getCurrentIntersection().y));
 //			System.out.println("bag: "+test.numObjs);
 			
+			robotBag.add(r);
 			schedule.scheduleRepeating(r);
-			robots.setObjectLocation(r,
+			robotEnvironment.setObjectLocation(r,
 	                new Double2D( ((Segment)intersection.get(index)).x ,((Segment)intersection.get(index)).y )); // random location
 		}
 		
+		//add target on the map
 		t = new Target();
 		int index = random.nextInt(numIntersection);
-		robots.setObjectLocation(t, new Double2D( ((Segment)intersection.get(index)).x ,((Segment)intersection.get(index)).y ));
+		robotEnvironment.setObjectLocation(t, new Double2D( ((Segment)intersection.get(index)).x ,((Segment)intersection.get(index)).y ));
 		
 	}
 	
+	/**
+	 * detect if all robots are dead, then terminate the simulation
+	 */
+	public void detectTermination(){
+		int noActiveAgents = robotBag.size();
+    	for(Object o: this.robotBag)
+    	{
+    		if(((Robot)o).isActive == false)
+    		{
+    			noActiveAgents--;
+    		}
+    		
+    	}
+    	
+    	System.out.println("Alive robot "+noActiveAgents);
+		if(noActiveAgents < 1)
+		{
+			this.schedule.clear();
+			this.kill();
+		}
+	}
 	
 	
 	private void buildRadialStreet() {

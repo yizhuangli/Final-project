@@ -67,7 +67,7 @@ public  class LSystemDrawer implements Steppable
             if(draw_time >= code.length)
                 {
             	System.out.println("Street building done!!!");
-            	ls.addRobot(); //start to add robots on the road
+            	ls.addLightAndRobot(); //start to add robots on the road
                 if(stopper!=null) stopper.stop();
                 return;
                 }

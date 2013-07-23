@@ -1,6 +1,8 @@
 package myrobot;
 
 import java.text.DecimalFormat;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import astar.Astar;
 
@@ -22,9 +24,12 @@ public class Robot implements Steppable{
 	Astar astar;
 	Bag inter; //bag of intersection at specified location
 	Bag intersection; //all intersections 
+//	Bag drivedPoint = new Bag(); //segment that robot has passed
+	Queue<Double2D> drivedPoint = new LinkedList<Double2D>();  
 	int direction = 0; //1,-1,2,-2 -- up,down,left,right
 	boolean reverseDrive = false;
 	boolean isActive = true;
+	boolean isWait = false; //wait for the signal
 	
 	public Robot(Robots state){
 		segsize = state.segsize;
@@ -35,14 +40,13 @@ public class Robot implements Steppable{
 	@Override
 	public void step(SimState state) {
 		sim = (Robots) state;
-		Continuous2D environment = sim.robots;
+		Continuous2D environment = sim.robotEnvironment;
 		Double2D me = environment.getObjectLocation(this); //current location of robot
+		double newx = me.x;
+		double newy = me.y;
 		
 		Target t = sim.t;
 		Double2D targetloc = environment.getObjectLocation(t); //location of target
-		
-		double newx = me.x;
-		double newy = me.y;
 		
 //		randomWalk(me); //random walk mode
 		
@@ -52,30 +56,56 @@ public class Robot implements Steppable{
 				if(targetloc.equals(me)){
 					System.out.println("Reach target!!!");
 					this.isActive = false;
+					sim.detectTermination();
 				}
 				else{
-					Bag b =	getAvailableNeighbor(me);
-					System.out.println("neighbor size: "+b.size());
-					Double2D nextpoint = astar.calculateNextPoint(me, targetloc, b);
-					Segment currentSeg = findSegmentByStartAndEnd(me,nextpoint);
-					this.setCurrentIntersection(currentSeg);
-					System.out.println(currentSeg);
-					direction = this.getDirection();
+					if(this.isWait==false){
+						Bag b =	getAvailableNeighbor(me);
+						System.out.println("neighbor size: "+b.size());
+						Double2D nextpoint = astar.calculateNextPoint(me, targetloc, b);
+						Segment currentSeg = findSegmentByStartAndEnd(me,nextpoint);
+						this.setCurrentIntersection(currentSeg);
+						System.out.println(currentSeg);
+						direction = this.getDirection();
+						drivedPoint.offer(nextpoint);
+						if(drivedPoint.size()>2)
+							drivedPoint.poll();
+					}
 					
 				}
 				
+				
+				if(this.detectRedLight(me)){
+					//do nothing, stop
+					this.isWait=true;
+				}
+				else{
+					this.isWait=false;
+					switch(direction){
+					case 1: newy -= 0.1; break; //up
+					case -1: newy += 0.1; break;//down
+					case 2: newx -= 0.1; break;//left
+					case -2: newx += 0.1; break;//right
+					}
+				}
+				
+			}
+			
+			else{
+				switch(direction){
+				case 1: newy -= 0.1; break; //up
+				case -1: newy += 0.1; break;//down
+				case 2: newx -= 0.1; break;//left
+				case -2: newx += 0.1; break;//right
+				}
 			}
 
-			switch(direction){
-			case 1: newy -= 0.1; break; //up
-			case -1: newy += 0.1; break;//down
-			case 2: newx -= 0.1; break;//left
-			case -2: newx += 0.1; break;//right
-			}
+		
+			
 			//little bugs here, location coordinate's format should be specified like 0.0
 			DecimalFormat df = new DecimalFormat("#.#");
 			Double2D newloc = new Double2D(Double.parseDouble(df.format(newx)),Double.parseDouble(df.format(newy)));
-			sim.robots.setObjectLocation(this, newloc);
+			sim.robotEnvironment.setObjectLocation(this, newloc);
 			
 		} //end of if clause, robot is active
 		
@@ -97,11 +127,46 @@ public class Robot implements Steppable{
 			double h = this.getCurrentIntersection().h;
 			Double2D currentloc = new Double2D(loc.x*w,loc.y*h);
 			Double2D startloc = new Double2D( ((Segment)allneighbor.get(i)).x1, ((Segment)allneighbor.get(i)).y1);
-			if(!currentloc.equals(startloc))
-				available.add(allneighbor.get(i));
+			if(drivedPoint.isEmpty() || reverseDrive == false){
+				if(!currentloc.equals(startloc))
+					available.add(allneighbor.get(i));
+			}
+			else{
+				System.out.println(drivedPoint.peek());
+				if(!currentloc.equals(startloc) && !drivedPoint.peek().equals(startloc))
+					available.add(allneighbor.get(i));
+			}
+			
 		}
 		
 		return available;
+		
+	}
+	
+	/**
+	 * detect if there is a light in front of the robot
+	 * @param loc
+	 */
+	public boolean detectRedLight(Double2D loc){
+		int dire = this.getCurrentDirection();
+		Bag light = sim.lightBag;
+		Double2D lightloc = null;
+		switch(dire){
+		case 1: lightloc = new Double2D(loc.x,loc.y-segsize); break; //up
+		case -1: lightloc = new Double2D(loc.x,loc.y+segsize); break;//down
+		case 2: lightloc = new Double2D(loc.x-segsize,loc.y); break;//left
+		case -2: lightloc = new Double2D(loc.x+segsize,loc.y); break;//right
+		}
+		
+		for(int i=0;i<light.size();i++){
+			Light l = (Light)light.get(i);
+
+			if(l.getLightLocation().equals(lightloc))
+				if(l.getSignal() == 0) //red light
+					return true;
+				
+		}
+		return false;
 		
 	}
 	
