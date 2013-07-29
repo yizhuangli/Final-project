@@ -138,6 +138,14 @@ public class RuleUI extends JPanel
                 ByteList newCode;
                 newCode = new ByteList(ls.l.code.b.length);
                 
+                int cal_time = 0;
+                long seed = ls.seed();
+                ls.random.setSeed(seed);
+                int rand = Math.abs(ls.random.nextInt());  //always positive
+                int rand_length = String.valueOf(rand).length();
+                System.out.println(seed);
+                System.out.println(rand_length);
+                System.out.println(rand);
                 // main expanion loop
                 while(true)
                     {
@@ -169,6 +177,15 @@ public class RuleUI extends JPanel
 //                        }
                     
     //############# my extension here. make l system random using Stochastic grammars##############
+//                    long seed = ls.seed();
+//                    ls.random.setSeed(seed);
+//                    int rand = ls.random.nextInt();
+//                    System.out.println("random: "+rand);
+//                    System.out.println("time: "+cal_time);
+                    
+                    int index = cal_time%rand_length;
+                    int digit = Integer.valueOf(String.valueOf(rand).substring(index, index+1));
+                 
                     int ruleSize = ls.l.rules.size();
                     if(ls.l.code.b[p] == (((Rule)ls.l.rules.get(0)).pattern)) {
 		                    if(ruleSize==1){
@@ -176,9 +193,15 @@ public class RuleUI extends JPanel
 		                    	ruleApplied = true;
 		                    }
 		                    else{
-		                    	int random = ls.random.nextInt(ruleSize);
 		                    	
-		            			newCode.addAll(((Rule)ls.l.rules.get(random)).replace);
+		                    	if(digit < ruleSize)
+		                    		newCode.addAll(((Rule)ls.l.rules.get(digit)).replace);
+		                    	else
+		                    		newCode.addAll(((Rule)ls.l.rules.get(digit%ruleSize)).replace);
+//		                    	
+//		                    	int random = ls.random.nextInt(ruleSize);
+//		                    	
+//		            			newCode.addAll(((Rule)ls.l.rules.get(random)).replace);
 		            			ruleApplied = true;
 		                    	
 		                    }
@@ -204,7 +227,7 @@ public class RuleUI extends JPanel
                         }
                     
                     p++;                        // increment p to go to the next
-                    
+                    cal_time++;
                         
                     // Cycle the progress bar to show thinking!
                     // You're probably thinking.. "Hey.. this is such a waste of time, why 
@@ -240,6 +263,7 @@ public class RuleUI extends JPanel
                         newCode = new ByteList(ls.l.code.length);
                         }
                     }
+                
                 // end main expansion loop
 
                 
@@ -599,4 +623,6 @@ public class RuleUI extends JPanel
         
         helpPanel.add(list2, BorderLayout.CENTER);
         }
+    
+   
     }

@@ -34,7 +34,7 @@ public class Light implements Steppable {
 		sim = (Robots) state;
 		Schedule schedule = sim.schedule;
 		int time = (int) schedule.getTime();
-		System.out.println("time: "+time);
+//		System.out.println("time: "+time);
 		
 		if(time%100 ==0){
 			if(this.getSignal()==0)
