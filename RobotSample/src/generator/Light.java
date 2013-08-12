@@ -1,4 +1,4 @@
-package myrobot;
+package generator;
 
 import sim.engine.Schedule;
 import sim.engine.SimState;

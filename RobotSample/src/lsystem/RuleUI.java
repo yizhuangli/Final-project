@@ -6,14 +6,15 @@
 
 // Class RuleUI
 package lsystem;
+import generator.RobotWithUI;
+import generator.Robots;
+
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
-import myrobot.RobotWithUI;
-import myrobot.Robots;
 import sim.util.gui.*;
 
 // This class becomes the Rules pane of the Console
@@ -146,6 +147,8 @@ public class RuleUI extends JPanel
                 System.out.println(seed);
                 System.out.println(rand_length);
                 System.out.println(rand);
+                
+               
                 // main expanion loop
                 while(true)
                     {
@@ -266,6 +269,8 @@ public class RuleUI extends JPanel
                 
                 // end main expansion loop
 
+//                System.out.println(ls.l.code.b[1]);
+//                System.out.println(new String(new byte[]{ls.l.code.b[1]}));
                 
                 System.out.println("after calculating.."+ls.l.code.length);
                 

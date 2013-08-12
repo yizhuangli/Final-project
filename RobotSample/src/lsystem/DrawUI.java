@@ -6,12 +6,13 @@
 
 // Class DrawUI
 package lsystem;
+import generator.RobotWithUI;
+import generator.Robots;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import myrobot.RobotWithUI;
-import myrobot.Robots;
 import sim.util.gui.*;
 
 // This file contains the "Draw" pane of the Console

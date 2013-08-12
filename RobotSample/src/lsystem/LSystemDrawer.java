@@ -5,7 +5,7 @@
 */
 
 package lsystem;
-import myrobot.Robots;
+import generator.Robots;
 import sim.util.*;
 import sim.engine.*;
 

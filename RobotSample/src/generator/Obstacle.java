@@ -1,4 +1,4 @@
-package myrobot;
+package generator;
 
 import sim.util.Double2D;
 

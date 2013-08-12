@@ -1,4 +1,4 @@
-package myrobot;
+package generator;
 
 import java.awt.Color;
 
