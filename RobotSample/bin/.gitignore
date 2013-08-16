@@ -1,10 +1,7 @@
-/vdiagram22
 /astar
 /dominant
+/evaluator
+/generator
 /lsystem
 /modeling
-/myrobot
 /mytest
-/vdiagram
-/generator
-/evaluator

@@ -19,7 +19,9 @@ public class EventRecorder {
 		sim = robots;
 	}
 	
-	
+	/**
+	 * record the generated situations in the log
+	 */
 	public void setLogFile(){
 		try {
 			OutputStream outputstream = new FileOutputStream("log.txt", true);
@@ -29,6 +31,7 @@ public class EventRecorder {
 			for(int i=0;i<sim.l.code.length;i++){
 				printstream.print(new String(new byte[]{sim.l.code.b[i]}));
 			}
+			printstream.println();
 			
 			printstream.close();
 		} catch (FileNotFoundException e) {
