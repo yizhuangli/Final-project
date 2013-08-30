@@ -144,10 +144,10 @@ public class RuleUI extends JPanel
                 ls.random.setSeed(seed);
                 int rand = Math.abs(ls.random.nextInt());  //always positive
                 int rand_length = String.valueOf(rand).length();
-                System.out.println(seed);
-                System.out.println(rand_length);
-                System.out.println(rand);
-                
+//                System.out.println(seed);
+//                System.out.println(rand_length);
+//                System.out.println(rand);
+                int time1 = (int) System.currentTimeMillis();
                
                 // main expanion loop
                 while(true)
@@ -271,8 +271,10 @@ public class RuleUI extends JPanel
 
 //                System.out.println(ls.l.code.b[1]);
 //                System.out.println(new String(new byte[]{ls.l.code.b[1]}));
+                int time2 = (int) System.currentTimeMillis();
                 
                 System.out.println("after calculating.."+ls.l.code.length);
+                System.out.println("computation time: "+(time2-time1));
                 
                 // on successful end, enable calculate and disable cancel buttons
                 SwingUtilities.invokeLater(

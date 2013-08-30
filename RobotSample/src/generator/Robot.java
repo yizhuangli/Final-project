@@ -67,6 +67,8 @@ public class Robot implements Steppable{
 						this.setCurrentIntersection(currentSeg);
 						System.out.println(currentSeg);
 						direction = this.getDirection();
+						
+						//introduce a little memory for the robot
 						drivedPoint.offer(nextpoint);
 						if(drivedPoint.size()>2)
 							drivedPoint.poll();

@@ -24,7 +24,7 @@ public class EventRecorder {
 	 */
 	public void setLogFile(){
 		try {
-			OutputStream outputstream = new FileOutputStream("log.txt", true);
+			OutputStream outputstream = new FileOutputStream("log1.txt", true);
 			PrintStream printstream = new PrintStream(outputstream);
 			printstream.print(sim.seed()+","+sim.numLights+","+sim.numRobots+","+sim.l.code.length+","+sim.intersection.numObjs+",");
 			

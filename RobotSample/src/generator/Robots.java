@@ -103,10 +103,15 @@ public class Robots extends SimState{
 	 * add robots on the road after drawing the road
 	 */
 	public void addLightAndRobot(){
+		
 		intersection = ld.intersection;
 		segsize = ld.getSegSize();
 		int numIntersection = ld.intersection.numObjs;
 		System.out.println("Adding light and robot... Intersection num: "+ld.intersection.numObjs);
+		
+		//start the event recorder to save the road data
+		EventRecorder recorder = new EventRecorder(this);
+		recorder.setLogFile();
 		
 		
 		//add traffic lights on the map
@@ -168,10 +173,7 @@ public class Robots extends SimState{
 			this.schedule.clear();
 			this.kill();
 			
-			//start the event recorder
-			EventRecorder recorder = new EventRecorder(this);
-		
-				recorder.setLogFile();
+			
 				
 			
 		}

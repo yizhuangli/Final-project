@@ -4,10 +4,14 @@ package evaluator;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -27,7 +31,7 @@ public class EvaluatorMain {
 	private void loadLogFile(){
 		
 		try {
-			InputStream inputstream = new FileInputStream("log.txt");
+			InputStream inputstream = new FileInputStream("log1.txt");
 			BufferedReader rd = new BufferedReader(new InputStreamReader(inputstream));
 			String s = null;
 			while((s=rd.readLine())!=null){
@@ -43,38 +47,66 @@ public class EvaluatorMain {
 	}
 	
 	/**
-	 * read data from the log
+	 * read data from the log  and  write the data into a .csv file for clustering with ELKI 
 	 */
 	private void readData() {
-		for(int i=0;i<log.size();i++){
-			String seed = log.get(i).split(",")[0];
-			String numLight = log.get(i).split(",")[1];
-			String numRobot = log.get(i).split(",")[2];
-			String ruleLength = log.get(i).split(",")[3];
-			String numIntersection = log.get(i).split(",")[4];
-			String rule = log.get(i).split(",")[5];
+		
+		try {
+			OutputStream outputstream = new FileOutputStream("log.csv");
+			OutputStream outputstream1 = new FileOutputStream("log_cluster.txt");
+			PrintStream printstream = new PrintStream(outputstream);
+			PrintStream printstream1 = new PrintStream(outputstream1);
 			
-			int forward = 0,leftturn = 0,rightturn = 0;
-			for(int j=0;j<Integer.valueOf(ruleLength);j++){
-//				System.out.println(rule.charAt(j));
-				if(String.valueOf(rule.charAt(j)).equalsIgnoreCase("F"))
-					forward++;
-				else if(String.valueOf(rule.charAt(j)).equals("+"))
-					leftturn++;
-				else if(String.valueOf(rule.charAt(j)).equals("-"))
-					rightturn++;	
+			printstream1.print("seed\t"+"ruleLength\t"+"numIntersection\t"+"leftturn\t"+"rightturn");
+			printstream1.println();
+			
+			for(int i=0;i<log.size();i++){
+				String seed = log.get(i).split(",")[0];
+				String numLight = log.get(i).split(",")[1];
+				String numRobot = log.get(i).split(",")[2];
+				String ruleLength = log.get(i).split(",")[3];
+				String numIntersection = log.get(i).split(",")[4];
+				String rule = log.get(i).split(",")[5];
+				
+				int forward = 0,leftturn = 0,rightturn = 0;
+				for(int j=0;j<Integer.valueOf(ruleLength);j++){
+//					System.out.println(rule.charAt(j));
+					if(String.valueOf(rule.charAt(j)).equalsIgnoreCase("F"))
+						forward++;
+					else if(String.valueOf(rule.charAt(j)).equals("+"))
+						leftturn++;
+					else if(String.valueOf(rule.charAt(j)).equals("-"))
+						rightturn++;	
+				}
+				
+				printstream.print(/*ruleLength+","+numIntersection+","+*/leftturn+","+rightturn);
+				printstream.println();
+				
+				printstream1.print(seed+"\t"+ruleLength+"\t"+numIntersection+"\t"+leftturn+"\t"+rightturn);
+				printstream1.println();
+				
+				System.out.println(forward+","+leftturn+","+rightturn);
+				LogData log = new LogData(seed, Integer.valueOf(numLight), Integer.valueOf(numRobot), Integer.valueOf(ruleLength),Integer.valueOf(numIntersection),forward,leftturn,rightturn,rule);
+				logdata.add(log);
 			}
 			
-			System.out.println(forward+","+leftturn+","+rightturn);
-			
-			
-			LogData log = new LogData(seed, Integer.valueOf(numLight), Integer.valueOf(numRobot), Integer.valueOf(ruleLength),Integer.valueOf(numIntersection),forward,leftturn,rightturn,rule);
-			logdata.add(log);
+			printstream.close();
+			printstream1.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+	
+		
+		
 		
 		
 	}
 	
+	
+	/**
+	 * calculate the distance matrix
+	 */
 	private void calculate() {
 		System.out.println("log size: "+logdata.size());
 		dist = new double[logdata.size()][logdata.size()];
@@ -100,6 +132,10 @@ public class EvaluatorMain {
 		
 	}
 	
+	/**
+	 * write the cluster result to xml file
+	 * @param xMLTree
+	 */
 	private void WriteXml(String xMLTree) {
 		// TODO Auto-generated method stub
 		BufferedWriter out;
@@ -142,6 +178,8 @@ public class EvaluatorMain {
 		em.readData();
 		em.calculate();
 		em.showDistTable();
+		
+		
 		
 
 	}
